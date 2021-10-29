@@ -59,13 +59,13 @@ function Home(props) {
 
   return (
     <List>
-      <h1>{props.name}</h1>
+      <h1>{data.loading ? 'carregando' : props.name}</h1>
       {
         data.loading ? (
-          <h1>carregando</h1>
+          <></>
           ) : (
-            show ? data.loading ? (
-            <h1>carregando...</h1>
+            !show ? (
+            <></>
           ):(
             <table>
               <tbody>
@@ -105,10 +105,7 @@ function Home(props) {
             </table>
     
           )
-    : (
-        <></>
-      )
-  
+
         )
       }
       <div id="img">
