@@ -2,11 +2,27 @@ import { NavMenu, UserInfo, ActionsButtons } from './style'
 import { Link } from 'react-router-dom'
 import userProfile from './assets/user-profile.svg'
 import addImage from './assets/add.svg'
+import { useEffect, useState } from 'react'
 
 
 function Nav(props) {
+  const [userInfo, setUserInfo] = useState({
+    token: '',
+    name: '',
+    job: -1 
+  })    
 
   let queryString = window.location.pathname
+
+  useEffect(() => {
+    let credencials = JSON.parse(localStorage.getItem('infos')) 
+
+    credencials ? setUserInfo(credencials) : setUserInfo({
+      name: 'User not logged in',
+      job: -1,
+    })
+
+  }, [])
 
   console.log(queryString);
   return (
@@ -15,7 +31,7 @@ function Nav(props) {
       <img src={userProfile} alt="user profile"/>
         <div className="userCredencials">
           <h1>
-            Kauã Nunes
+            {userInfo.name}
           </h1>
           <span>
             Officer 
@@ -31,7 +47,7 @@ function Nav(props) {
           </Link>
           
         </button>
-        <button type="button"><img src={addImage} alt="add" /></button>
+        <button type="button"><Link to="/create/"><img src={addImage} alt="add" /></Link></button>
         
         
 

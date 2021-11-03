@@ -53,7 +53,7 @@ export const List = styled.div`
     tr {
       display: flex;
       width: 100%;
-      justify-content: space-around;
+      justify-content: space-evenly;
     }
 
     td {
