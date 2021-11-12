@@ -1,17 +1,19 @@
 import styled from 'styled-components'
 export const List = styled.div`
+  width: 900px;
   max-width: 70%;
   min-height: 50px;
   height: auto;
 
   background: #fff;
   
-  margin: 0 auto;
+  margin: 10% 0;
+
   padding: 10px 15px;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   
   border-radius: 4px;
   
@@ -20,10 +22,13 @@ export const List = styled.div`
     font-weight: 500;
     color: #324C73;
   }
+
+  
   div#img {
     width: 100%;
     display: flex;
     justify-content: end;
+  
     svg {
       width: 24px;
       height: auto;
@@ -31,6 +36,7 @@ export const List = styled.div`
       transition: all .3s;
       border-radius: 5px;
     }
+  
     svg:hover {
       background: #324C73;
     }
@@ -43,27 +49,28 @@ export const List = styled.div`
     svg.active {
       transform: rotate(180deg);
     }
+  
   }
   
   table {
-    width: 90%;
-    margin: 10px 75px 25px;
+    margin: 10px 0;
+    width: 100%;
+    border-collapse: collapse;
     transition: all .3s;
-    
-    tr {
-      display: flex;
-      width: 100%;
-      justify-content: space-evenly;
-    }
 
     td {
-    
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
       img {
         cursor: pointer;
       }
       img.deleteIcon {
         align-self: flex-end;
       }
+    }
+    tr:nth-child(even) {
+      background-color: #dddddd;
     }
   }
 ` 

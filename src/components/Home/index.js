@@ -1,17 +1,37 @@
 import { Login } from './style'
-import { createBrowserHistory } from 'history';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
+import { useEffect } from 'react';
 
 function Home() {
-  let history = createBrowserHistory();
+
+  let user = JSON.parse(localStorage.getItem('infos'))
+
+  useEffect(() => {
+    if(user) {
+      window.location.href = "http://localhost:3002/funcionarios/";             
+    }
+  }, [user])
+
+  let toastOptions = {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,  
+
+  }
+
   function handleLogin(e) {
     console.log(e);
     e.preventDefault()
     const fields = document.querySelectorAll('input')
     fields.forEach((field) => {
       if (!field.value) {
-        // alert('campo vazio')
+        toast.error(`${field.name} is empty`, toastOptions);
         return
       }
     })
@@ -35,10 +55,15 @@ function Home() {
                 job: response.data.job,
               })
               localStorage.setItem('infos', userData)
-              window.location.href = "http://localhost:3002/cargos/";             
+              toast.success('Logado com sucesso!', toastOptions);
+              setTimeout(() => {
+                window.location.href = "http://localhost:3002/cargos/";             
+              }, 2500)
              return
           })      
     } catch (error) {
+      toast.error('Algo deu errado.', toastOptions)
+
       console.log(error);
     }
 
@@ -53,6 +78,7 @@ function Home() {
         <input type="password" name="password" id="password"/>
         <button>Entrar</button>
       </form>
+      <ToastContainer />
     </Login>
   )
 }

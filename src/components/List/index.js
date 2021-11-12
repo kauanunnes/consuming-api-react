@@ -1,30 +1,33 @@
 import { List } from './style'
 import editIcon from './assets/edit.svg'
 import deleteIcon from './assets/delete.svg'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 function Home(props) {
-
   const [data, setData] = useState({
     response: [],
     loading: false,
-    show: false
+    
   })
-
-  const [show, setShow] = useState(false)
-
 
   const [dataJobs, setDataJobs] = useState([])
 
-  const handleArrowClick = (e) => {
-    const situation = show
-    setShow(!situation)
-    e.target.classList.toggle('active') 
-  }
-
   let url;
+
+  let toastOptions = {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,  
+
+  }
 
   switch (props.name) {
     case 'Funcionários':
@@ -55,7 +58,39 @@ function Home(props) {
             setDataJobs(returnedJobs.data)
           })
       })
-  }, [])
+  }, [url])
+
+  const handleDelete = (e) => {
+    let { id } = e.target
+    let {token} = JSON.parse(localStorage.getItem('infos'))
+
+    axios({
+      method: 'delete',
+      url: `${url}${id}`,
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'authorization': `Bearer ${token}`,
+      }
+    })
+
+      .then(res => {
+        console.log(res);
+        toast.success(res.data, toastOptions)
+          setTimeout(() => {
+            window.location.reload(false)
+          }, 2500)
+      })
+      .catch(({response}) => {
+        
+        if (response.status === 401) {
+          toast.error('Você não pode deletar outros usuários.', toastOptions)
+          return
+        }
+
+        toast.error('Algo deu errado.', toastOptions)
+
+      })
+  }
 
   return (
     <List>
@@ -64,9 +99,6 @@ function Home(props) {
         data.loading ? (
           <></>
           ) : (
-            !show ? (
-            <></>
-          ):(
             <table>
               <tbody>
                 {data.response.map((value) => {
@@ -80,6 +112,7 @@ function Home(props) {
                           if (value.job === element.id) {
                             return element.name
                           }
+                          return ''
                         })
                       }
                       </td>
@@ -88,14 +121,12 @@ function Home(props) {
                     )
                     }
                     <td>
-                      <Link to={`/user/edit/${value.id}`}>
+                      <Link to={`/${props.name === 'Funcionários' ? 'user': props.name === 'Cargos' ? 'position' : 'sector' }/edit/${value.id}`}>
                         <img src={editIcon} alt="edit" />
                       </Link>
                     </td>
                     <td>
-                      <Link to={`/user/delete/${value.id}`}>
-                        <img src={deleteIcon} alt="delete" className="deleteIcon"/>
-                      </Link>
+                        <img src={deleteIcon} alt="delete" id={value.id} className="deleteIcon" onClick={handleDelete}/>
                     </td>
                   </tr>
      
@@ -103,17 +134,10 @@ function Home(props) {
                 })}
               </tbody>
             </table>
-    
-          )
-
         )
       }
-      <div id="img">
-        <svg width="27" height="24" viewBox="0 0 27 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleArrowClick}>
-          <path d="M5.81079 8L13.3784 19L20.9459 8H5.81079Z" fill="#324C73" fillOpacity="0.96"/>
-        </svg>
-      </div>
-      
+      <ToastContainer />
+
     </List>
   );
 }
