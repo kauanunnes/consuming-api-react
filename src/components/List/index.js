@@ -1,11 +1,12 @@
-import { List } from './style'
-import editIcon from './assets/edit.svg'
-import deleteIcon from './assets/delete.svg'
-import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { base_url } from '../../helpers/api';
+import deleteIcon from './assets/delete.svg';
+import editIcon from './assets/edit.svg';
+import { List } from './style';
 
 function Home(props) {
   const [data, setData] = useState({
@@ -31,13 +32,13 @@ function Home(props) {
 
   switch (props.name) {
     case 'Funcionários':
-      url = 'http://localhost:3000/user/'   
+      url = `${base_url}/user/`   
       break;
     case 'Cargos':
-      url = 'http://localhost:3000/job/'
+      url = `${base_url}/job/`
       break;
     case 'Setores':
-      url = 'http://localhost:3000/sector/'
+      url = `${base_url}/sector/`
       break;
     default:
       break;
@@ -48,7 +49,7 @@ function Home(props) {
 
     axios.get(url)
       .then((returned) => {
-        axios.get('http://localhost:3000/job/')
+        axios.get(`${base_url}/job/`)
           .then((returnedJobs) => {
             setData({
               response: returned.data,

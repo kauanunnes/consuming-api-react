@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Container } from "./style"
+import { base_url } from '../../helpers/api';
+import { Container } from "./style";
+
+
 
 function Create({name}) {
   let { id } = useParams()
@@ -22,10 +25,10 @@ function Create({name}) {
 
   switch (name) {
     case 'Cargos':
-      url = 'http://localhost:3000/job/'
+      url = `${base_url}/job/`
       break;
     case 'Setores':
-      url = 'http://localhost:3000/sector/'
+      url = `${base_url}/sector/`
       break;
     default:
       break;
@@ -69,7 +72,7 @@ function Create({name}) {
     setSectors({
       loading: true,
     })
-    axios.get('http://localhost:3000/sector/')
+    axios.get(`${base_url}/sector/`)
       .then(({data}) => {
         setSectors({
           loading: false,
