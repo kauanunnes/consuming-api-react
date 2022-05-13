@@ -140,41 +140,6 @@ function Home(props) {
             ))}
           </TableBody>
         </Table>
-        // <table>
-        //   <tbody>
-        //     {data.response.map((value) => {
-        //       return (
-        //       <tr key={value.id}>
-        //         <td>{value.id}</td>
-        //         <td>{value.name}</td>
-        //         {value.job ? (
-        //           <td>{
-        //             dataJobs.map(element => {
-        //               if (value.job === element.id) {
-        //                 return element.name
-        //               }
-        //               return ''
-        //             })
-        //           }
-        //           </td>
-        //         ) : (
-        //           <></>
-        //         )
-        //         }
-        //         <td>
-        //           <Link to={`/${props.name === 'Funcionários' ? 'user': props.name === 'Cargos' ? 'position' : 'sector' }/edit/${value.id}`}>
-        //             <img src={editIcon} alt="edit" />
-        //           </Link>
-        //         </td>
-        //         <td>
-        //             <img src={deleteIcon} alt="delete" id={value.id} className="deleteIcon" onClick={handleDelete}/>
-        //         </td>
-        //       </tr>
-
-        //       )
-        //     })}
-        //   </tbody>
-        // </table>
       )}
       <ToastContainer />
     </List>
