@@ -13,6 +13,16 @@ export const Container = styled.div`
   
 
   form {
-    width: 35%;
+    width: 100%;
+    max-width: 225px;
+    height: auto;
+    display: flex;
+    
+    label {
+      
+    }
+    button {
+      display: block;
+    }
   }
 `

@@ -1,201 +1,216 @@
+import { Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { base_url } from '../../helpers/api';
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { UserContext } from "../../context";
+import { base_url } from "../../helpers/api";
+import { toastOptions } from "../../helpers/options";
 import { Container } from "./style";
 
-
-
-function Create({name}) {
-  let { id } = useParams()
+function Create({ name }) {
+  let { id } = useParams();
+  const { logged } = React.useContext(UserContext);
 
   const [data, setData] = useState({
     loading: false,
-    data: {}
-  })
+    data: {},
+  });
 
   const [sectors, setSectors] = useState({
     loading: false,
-    data: []
-  })
+    data: [],
+  });
 
   let url;
 
+  const navigate = useNavigate();
+
   switch (name) {
-    case 'Cargos':
-      url = `${base_url}/job/`
+    case "Cargos":
+      url = `${base_url}/job/`;
       break;
-    case 'Setores':
-      url = `${base_url}/sector/`
+    case "Setores":
+      url = `${base_url}/sector/`;
       break;
     default:
       break;
-  }
-  
-  let toastOptions = {
-    position: "top-right",
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,  
   }
 
   useEffect(() => {
     setData({
       loading: true,
-    })
+    });
     if (id) {
-      axios.get(`${url}${id}`)
-      .then(({data}) => {
-        let res = data[0];
-        setData({
-          loading: false,
-          data: res,
+      axios
+        .get(`${url}${id}`)
+        .then(({ data }) => {
+          let res = data[0];
+          console.log(res);
+          setData({
+            loading: false,
+            data: res,
+          });
         })
-        
-      })
-      .catch(err => {
-        console.log(err);
-      })
-
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       setData({
         loading: false,
-      })
+      });
     }
 
-    
     setSectors({
       loading: true,
-    })
-    axios.get(`${base_url}/sector/`)
-      .then(({data}) => {
+    });
+    axios
+      .get(`${base_url}/sector/`)
+      .then(({ data }) => {
         setSectors({
           loading: false,
-          data
-        })
+          data,
+        });
       })
-      .catch(err => {
-        toast.error('Algo deu errado.', toastOptions)
+      .catch((err) => {
+        toast.error("Algo deu errado.", toastOptions);
 
         console.log(err);
-      })
-  }, [])
-  
-  const config = {     
-      headers: { 
-        'content-type': 'application/x-www-form-urlencoded',
-      },
-  }
+      });
+  }, [id, url]);
+
+  const config = {
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  };
   const handleCreate = (e) => {
-    e.preventDefault()
-    let data = preparingFormData()
+    e.preventDefault();
+    let data = preparingFormData();
 
-    axios.put(url, data, config)
+    axios
+      .put(url, data, config)
       .then(() => {
-        toast.success('Criado com sucesso.', toastOptions)
-        setTimeout(() => {
-          window.location = `http://localhost:3002/${name === 'Cargos' ?'cargos':'setores'}/`
-        }, 2500)
+        toast.success("Criado com sucesso.", toastOptions);
+        navigate(name === "Cargos" ? "/cargos" : "/setores");
       })
-      .catch(err => {
-        toast.error('Algo deu errado.', toastOptions)
+      .catch((err) => {
+        toast.error("Algo deu errado.", toastOptions);
         console.log(err);
-      })
-  }
+      });
+  };
 
   const handleEdit = (e) => {
-    e.preventDefault()
-    let data = preparingFormData()
-    axios.patch(`${url}${id}`, data, config)
+    e.preventDefault();
+    let data = preparingFormData();
+    axios
+      .patch(`${url}${id}`, data, config)
       .then(() => {
-        toast.success('Editado com sucesso.', toastOptions)
-        setTimeout(() => {
-          window.location = `http://localhost:3002/${name === 'Cargos' ?'cargos':'setores'}/`
-        }, 2500)
+        toast.success("Editado com sucesso.", toastOptions);
+        navigate(name === "Cargos" ? "/cargos" : "/setores");
       })
-      .catch(err => {
-        toast.error('Algo deu errado.', toastOptions)
+      .catch((err) => {
+        toast.error("Algo deu errado.", toastOptions);
         console.log(err);
-      })
-  }
+      });
+  };
 
   const preparingFormData = () => {
-    let nameField = document.querySelector('input#name')
+    let nameField = document.querySelector("input#name");
     if (!nameField.value) {
-      toast.error('Campo nome está vazio.', toastOptions)
-      return
+      toast.error("Campo nome está vazio.", toastOptions);
+      return;
     }
     let data;
 
-    if (name === 'Cargos') {
+    if (name === "Cargos") {
       data = new URLSearchParams({
         name: nameField.value,
-        sector: document.querySelector('select').value 
-      })
+        sector: document.querySelector("select").value,
+      });
     } else {
       data = new URLSearchParams({
         name: nameField.value,
-      })
+      });
     }
 
-    return data 
+    return data;
+  };
+
+  if (!logged) {
+    toast.warn("Você não pode criar ou editar algo sem estar logado.", toastOptions)
+    navigate("/");
   }
+
+  if (data.loading) return <Typography>Carregando....</Typography>;
 
   return (
     <Container>
-      <h1>Crie um {name === 'Cargos' ? 'cargo' : 'setor'}</h1>
-      <form onSubmit={id ? handleEdit : handleCreate}>
+      <h1>Crie um {name === "Cargos" ? "cargo" : "setor"}</h1>
+      <form autoComplete="off" onSubmit={id ? handleEdit : handleCreate}>
         {id ? (
           <>
-            <label htmlFor="id">ID:</label>
-            <input type="text" name="id" id="id" defaultValue={id} readOnly/>
-            {data.loading ? (
-              <>
-                <label htmlFor="name">Nome:</label> 
-                <input type="text" name="name" id="name" placeholder={name === 'Cargos' ? 'Nome do cargo' : 'Nome do setor'}/>
-              </>
-            ) : (
-              <>
-                <label htmlFor="name">Nome:</label>
-                <input type="text" name="name" id="name" defaultValue={data.data.name}/>
-              </>
-            )}
+            <TextField
+              type="text"
+              name="id"
+              id="id"
+              defaultValue={id}
+              disabled
+            />
+            <TextField
+              type="text"
+              name="name"
+              id="name"
+              defaultValue={!data.loading ? data.data?.name : "Carregando..."}
+              placeholder={
+                name === "Cargos" ? "Nome do cargo" : "Nome do setor"
+              }
+            />
           </>
         ) : (
           <>
-            <label htmlFor="name">Nome:</label>
-            <input type="text" name="name" id="name" placeholder={name === 'Cargos' ? 'Nome do cargo' : 'Nome do setor'}/>
+            <TextField
+              type="text"
+              name="name"
+              defaultValue={!data.loading ? data.data?.name : "Carregando..."}
+              id="name"
+              placeholder={
+                name === "Cargos" ? "Nome do cargo" : "Nome do setor"
+              }
+            />
           </>
         )}
-        {name === 'Cargos' ? (
+        {name === "Cargos" && !sectors.loading ? (
           <>
-            <label htmlFor="jobs">Escolha um setor</label>
-            <select name="jobs" id="jobs" placeholder="Escolha um setor:">
-              <option value="null" defaultValue >Selecione</option>
-              {sectors.loading ? (
-                <option value="loading">Carregando</option>
-              ) : (
-                <>
-                  {sectors.data.map(sector => {
-                    return ( <option value={sector.id} key={sector.id}>{sector.name}</option> )
-                  })}
-                </>
-              )}
+            <select
+              name="jobs"
+              defaultValue={data.data?.sector}
+              id="jobs"
+              placeholder="Escolha um setor:"
+            >
+              <option value="null">Selecione</option>
+              {sectors.data.map((sector) => {
+                return (
+                  <option value={sector.id} key={sector.id}>
+                    {sector.name}
+                  </option>
+                );
+              })}
+              )
             </select>
           </>
         ) : (
           <></>
         )}
-        <button>Criar</button>
+        <Button type="submit" variant="contained">
+          Criar
+        </Button>
       </form>
       <ToastContainer />
     </Container>
-  )
+  );
 }
 
-export default Create
+export default Create;

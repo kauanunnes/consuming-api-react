@@ -1,17 +1,14 @@
-import { Login } from "./style";
-import { base_url } from "../../helpers/api";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import React, { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { Button, Card, CardContent, TextField, Typography } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
 import { UserContext } from "../../context";
 import { toastOptions } from "../../helpers/options";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Login } from "./style";
 
 function Home() {
-  
   let context = React.useContext(UserContext);
-  let user = JSON.parse(localStorage.getItem("infos"));
+  let user = JSON.parse(localStorage.getItem("user"));
   console.log(context);
   useEffect(() => {
     if (user) {
@@ -35,23 +32,18 @@ function Home() {
     context.userLogin(data);
   }
 
-  // if (context.logged) {
-  //   navigate("/cargos");
-  //   return null
-  // }
-
   return (
-    <Login>
-      <h1>Logue-se</h1>
-      <form onSubmit={handleLogin}>
-        <label htmlFor="login">Login</label>
-        <input type="text" name="login" id="login" />
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" />
-        <button>Entrar</button>
-      </form>
-      <ToastContainer />
-    </Login>
+    <Card variant="outlined" sx={{ minWidth: 320 }}>
+      <CardContent>
+        <Typography textAlign="center" variant="h5">Login</Typography>
+        <form autoComplete="off" onSubmit={handleLogin}>
+          <TextField label="Login" type="text" name="login" id="login" />
+          <TextField label="Password" type="password" name="password" id="password" />
+          <Button type="submit" variant="contained">Sign in</Button>
+        </form>
+        <ToastContainer />
+      </CardContent>
+    </Card>
   );
 }
 

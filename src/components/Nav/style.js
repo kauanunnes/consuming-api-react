@@ -1,22 +1,24 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const NavMenu = styled.nav`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  
+
   padding: 15px;
 
   width: 15vw;
   height: 100vh;
-  
+
   background: #cecece;
-  
+
   align-self: flex-start;
-  
+
   .userInfo {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 15px;
 
@@ -38,12 +40,13 @@ export const NavMenu = styled.nav`
         font-size: 17px;
         font-weight: 600;
       }
-      
-      h1, span {
-        color: #031d44;
-        
-      }
 
+      h1,
+      span {
+        color: #031d44;
+        text-align: center;
+        text-transform: capitalize;
+      }
 
       span {
         font-size: 15px;
@@ -54,7 +57,23 @@ export const NavMenu = styled.nav`
 
   .router {
     width: 80%;
-
+    a {
+      width: 100%;
+    }
+    a::after {
+      content: " ";
+      position: absolute;
+      width: 0%;
+      transition: all 0.3s;
+      height: 1px;
+      background-color: #324C73;
+      border-radius: 2px;
+      bottom: -5px;
+      left: 0;
+    }
+    a:hover::after {
+      width: 100%;
+    }
     h2 {
       font-size: 17px;
       color: #031d44;
@@ -83,8 +102,8 @@ export const NavMenu = styled.nav`
           position: absolute;
           font-weight: 600;
           border-radius: 2px;
-          transition: all .5s;
-          
+          transition: all 0.5s;
+
           li:nth-child(even) {
             border-top: 1px solid #cecece;
           }
@@ -96,7 +115,7 @@ export const NavMenu = styled.nav`
         flex-direction: column;
         gap: 5px;
       }
-      
+
       li a {
         text-decoration: none;
         color: #031d44;
@@ -106,7 +125,6 @@ export const NavMenu = styled.nav`
         text-decoration: underline;
       }
     }
-
   }
 
   .actionsButtons {
@@ -123,9 +141,9 @@ export const NavMenu = styled.nav`
       svg {
         width: 35px;
         height: 35px;
-        
+
         path {
-          fill: #324C73;
+          fill: #324c73;
         }
       }
 
@@ -133,9 +151,7 @@ export const NavMenu = styled.nav`
         background: #fff;
         padding: 4px;
         border-radius: 50%;
-
       }
     }
-
   }
-`
+`;
