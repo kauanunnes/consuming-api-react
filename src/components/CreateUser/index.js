@@ -1,14 +1,17 @@
+import { Button, MenuItem, Select, TextField } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { UserContext } from "../../context";
 import { base_url } from "../../helpers/api";
 import { toastOptions } from "../../helpers/options";
 import { Container } from "./style";
 
 function Create() {
   const navigate = useNavigate();
+  const { logged } = React.useContext(UserContext);
   let { id } = useParams();
   const [userData, setUserData] = useState({
     loading: false,
@@ -39,7 +42,7 @@ function Create() {
       job: document.querySelector("select").value,
     });
 
-    let token = JSON.parse(localStorage.getItem("infos")).token;
+    let token = JSON.parse(localStorage.getItem("user")).token;
 
     const config = {
       headers: {
@@ -124,7 +127,7 @@ function Create() {
       job: document.querySelector("select").value,
     });
 
-    let token = JSON.parse(localStorage.getItem("infos")).token;
+    let token = JSON.parse(localStorage.getItem("user")).token;
 
     const config = {
       headers: {
@@ -148,47 +151,72 @@ function Create() {
       });
   };
 
+  if (!logged) {
+    toast.warn(
+      "Você não pode criar ou editar algo sem estar logado.",
+      toastOptions
+    );
+    navigate("/");
+  }
+
   return (
     <Container>
       {userData.loading ? (
-        <h1>carregando</h1>
+        <h1>Loading</h1>
       ) : (
         <>
           {id ? (
             <form onSubmit={handleEdit}>
-              <label htmlFor="name">ID</label>
-              <input type="text" name="id" id="id" value={id} readOnly />
-              <label htmlFor="name">Nome</label>
-              <input
+              <TextField
+                label="ID"
+                type="text"
+                name="id"
+                id="id"
+                value={id}
+                disabled
+              />
+
+              <TextField
+                label="Name"
                 type="text"
                 name="name"
                 id="name"
                 defaultValue={userData.data.name}
               />
-              <label htmlFor="login">Login</label>
-              <input
+
+              <TextField
+                label="Login"
                 type="text"
                 name="login"
                 id="login"
                 defaultValue={userData.data.login}
               />
-              <label htmlFor="password">Password</label>
-              <input
+
+              <TextField
+                label="Password"
                 type="password"
                 name="password"
                 id="password"
                 placeholder="Sua nova senha"
               />
-              <label htmlFor="tel">Telefone(s):</label>
-              <input
+
+              <TextField
+                label="Telefone(s)"
                 type="tel"
                 id="tel"
                 name="tel"
                 defaultValue={userData.data.phone}
               />
-              <label htmlFor="jobs">Escolha seu cargo</label>
-              <select name="jobs" id="jobs" placeholder="Escolha sua posição:">
-                <option value="null">Selecione</option>
+              <label htmlFor="jobs">Escolha seu cargo:</label>
+              <select
+                name="jobs"
+                id="jobs"
+                value={userData.data.job_id}
+                placeholder="Escolha sua posição:"
+              >
+                <option value="null" disabled>
+                  Selecione
+                </option>
                 {jobs.loading ? (
                   <option value="loading">Carregando</option>
                 ) : (
@@ -203,46 +231,51 @@ function Create() {
                   </>
                 )}
               </select>
-              <button type="submit">Editar</button>
+              <Button variant="contained" type="submit">
+                Editar
+              </Button>
             </form>
           ) : (
             <>
               <form onSubmit={handleCreate}>
-                <label htmlFor="name">Nome</label>
-                <input
+                <TextField
+                  label="Name"
                   type="text"
                   name="name"
                   id="name"
                   placeholder="Seu nome"
                 />
-                <label htmlFor="login">Login</label>
-                <input
+
+                <TextField
+                  label="Login"
                   type="text"
                   name="login"
                   id="login"
                   placeholder="Seu login"
                 />
-                <label htmlFor="password">Password</label>
-                <input
+
+                <TextField
+                  label="Password"
                   type="password"
                   name="password"
                   id="password"
                   placeholder="Sua senha"
                 />
-                <label htmlFor="tel">Telefone(s):</label>
-                <input
+
+                <TextField
+                  label="Telefone(s)"
                   type="tel"
                   id="tel"
                   name="tel"
                   placeholder="Seu telefone"
                 />
-                <label htmlFor="jobs">Escolha seu cargo</label>
+                <label htmlFor="jobs">Escolha seu cargo:</label>
                 <select
                   name="jobs"
                   id="jobs"
                   placeholder="Escolha sua posição:"
                 >
-                  <option value="null" defaultValue>
+                  <option value="null" disabled defaultValue>
                     Selecione
                   </option>
                   {jobs.loading ? (
@@ -259,7 +292,9 @@ function Create() {
                     </>
                   )}
                 </select>
-                <button type="submit">Criar</button>
+                <Button variant="contained" type="submit">
+                  Criar
+                </Button>
               </form>
             </>
           )}

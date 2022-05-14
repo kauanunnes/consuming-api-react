@@ -11,8 +11,6 @@ export const UserStorage = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = React.useState(null);
   const [logged, setLogged] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
 
   async function userLogin(user) {
     try {
