@@ -43,21 +43,6 @@ function Nav(props) {
           </div>
         )}
         <div className="router">
-          {/* <li>
-              <Link to="/funcionarios/">Funcionários</Link>
-            </li>
-            <li>
-              Setores
-              <ul className="submenu">
-                <li>
-                  <Link to="/setores/">Listar</Link>
-                </li>
-                <li>
-                  <Link to="/create/setores/">Criar</Link>
-                </li>
-              </ul>
-            </li> */}
-
           <List
             sx={{
               width: "100%",
